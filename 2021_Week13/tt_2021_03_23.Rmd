@@ -102,11 +102,28 @@ un_roll_call_issues <- descriptions %>%
 # Data Exploration
 
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
-
+#find out what kinds of issues are voted on
+unique(un_roll_call_issues$issue)
 ```
 
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
+#total votes per country
+votes_per_country = aggregate(x=as.numeric(un_votes$vote), by=list(un_votes$country), FUN=sum)
 
+#filter to this millenium
+##first must determine which roll call ids relate to issues dating from 2000 and later
+un_roll_calls$year = format(as.Date(un_roll_calls$date, format="%d/%m/%Y"),"%Y")
+recent_un_roll_calls = subset(un_roll_calls, un_roll_calls$year >= 2000)
+min_rcid = min(recent_un_roll_calls$rcid)
+max_rcid = max(recent_un_roll_calls$rcid)
+##now can filter votes
+recent_un_votes = subset(un_votes, rcid >= min_rcid & rcid <= max_rcid)
+
+#total votes per country in recent years
+recent_votes_per_country = aggregate(x=as.numeric(recent_un_votes$vote), by=list(recent_un_votes$country), FUN=sum)
+
+#determine biggest players (countries who have voted the most)
+biggest_players <- recent_votes_per_country %>% slice_max(order_by = x, n = 8)
 ```
 
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
