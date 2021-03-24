@@ -1,30 +1,117 @@
 ---
-title: "tt_2021_03_23"
+title: "TidyTuesday - UN Votes"
 author: "Moriah Taylor"
 date: "3/23/2021"
 output: html_document
 ---
 
+# This Week's Data
+
+The data this week comes from Harvard's Dataverse by way of Mine Çetinkaya-Rundel, David Robinson, and Nicholas Goguen-Compagnoni.
+
+Original Data citation:
+
+Citation: Erik Voeten "Data and Analyses of Voting in the UN General Assembly" Routledge Handbook of International Organization, edited by Bob Reinalda (published May 27, 2013). Available at SSRN: http://ssrn.com/abstract=2111149
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+library(tidytuesdayR)
+library(tidyverse)
+library(lubridate)
+library(ggdark)
+library(unvotes)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+# Load the Data
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+Download this week's data on UN Voting utilizing code made available on the TidyTuesday GitHub.
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+# Get the Data
+# Code sourced from TidyTuesday GitHub
+# (https://github.com/rfordatascience/tidytuesday/tree/master/data/2021/2021-03-23)
+
+unvotes <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-23/unvotes.csv')
+roll_calls <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-23/roll_calls.csv')
+issues <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-23/issues.csv')
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# Data Exploration
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+unique(issues$issue)
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+
+
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+
+```
+
+----------------------------------
+
+#### TidyTuesday
+
+Join the R4DS Online Learning Community in the weekly #TidyTuesday event!
+Every week we post a raw dataset, a chart or article related to that dataset, and ask you to explore the data.
+While the dataset will be “tamed”, it will not always be tidy! As such you might need to apply various R for Data Science techniques to wrangle the data into a true tidy format.
+The goal of TidyTuesday is to apply your R skills, get feedback, explore other’s work, and connect with the greater #RStats community!
+As such we encourage everyone of all skills to participate!
