@@ -24,6 +24,14 @@ library(lubridate)
 library(ggdark)
 library(unvotes)
 library(extrafont)
+library(sysfonts)
+library(showtext)
+library(dplyr)
+library(readxl)
+library(countrycode)
+library(tidyr)
+library(forcats)
+library(Cairo)
 ```
 
 
@@ -45,12 +53,6 @@ issues <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tid
 The data cleaning can be found in the [data-raw](https://github.com/dgrtwo/unvotes/blob/master/data-raw/un-data.R) folder of the package. 
 
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
-library(dplyr)
-library(readxl)
-library(countrycode)
-library(tidyr)
-library(forcats)
-
 vlevels <- c("yes", "abstain", "no")
 
 load("UNVotes2021.RData")
@@ -159,16 +161,14 @@ cold_war_nuclear_issues2 <- cold_war %>%
 ```
 
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
-#load fonts
+font_add(family = "Pangolin", "Pangolin-Regular.ttf")
+showtext.auto()
 loadfonts()
 ```
 
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
 #create visualization
-ggplot(cold_war_nuclear_issues, aes(x=x_axis, y=count_issues, ymax=count_issues)) +
-  #geom_ribbon(y=count_issues, ymin=0, ymax=19, color = '#D25c07') + #color="black", fill = '#D25c07'
-  #geom_area(fill='#D25c07') +
-  #geom_line(aes(color='#D25c07')) +
+plot <- ggplot(cold_war_nuclear_issues, aes(x=x_axis, y=count_issues, ymax=count_issues)) +
   geom_point(size=2, color='#D25c07') + 
   geom_ribbon(ymin=-1, fill='#D25c07', alpha=0.5) +
   scale_x_continuous(
@@ -185,30 +185,24 @@ ggplot(cold_war_nuclear_issues, aes(x=x_axis, y=count_issues, ymax=count_issues)
     title = "Going Nuclear",
     subtitle = "Number of Nuclear Issues Addressed in UN sessions during the Cold War",
     caption = "Made by Moriah Taylor, with UN Votes data"
-  ) +
+  ) + xlab("Year") + ylab("") +
   theme(
-    axis.title.x = element_blank(),
-    axis.title.y = element_blank(),
-    axis.text.x = element_text(color = "#000000", size = 14),
-    axis.text.y = element_text(color = "#000000", size = 14),
+    axis.text.x = element_text(color = "#000000", size = 14), 
+    axis.text.y = element_text(color = "#000000", size = 14), 
     axis.ticks = element_blank(),
     panel.background = element_rect(fill = "#dadbde"),
     plot.background = element_rect(fill = "#dadbde"),
     panel.grid.major = element_line(color = "#848690"),
-    panel.grid.minor = element_blank(),
     axis.line = element_line(color = "#848690"),
-    plot.title = element_text(hjust = 0.5, color = "#581e03", size = 25),
-    plot.subtitle = element_text(hjust = 0.5, color = "#581e03", size = 18),
-    plot.caption = element_text(color = "#3f1602", size = 12),
-    text = element_text(family = "Bahnschrift")
-
-  ) 
-
+    plot.title = element_text(face = "bold", hjust = 0.5, color = "#581e03", size = 25), 
+    plot.subtitle = element_text(hjust = 0.5, color = "#581e03", size = 18), 
+    plot.caption = element_text(color = "#3f1602", size = 12)) + 
+    dark_theme_gray(base_family="Pangolin")
+plot
+#ggsave("nuclear_plot.png")
 ```
 
-```{r, message=FALSE, warning=FALSE, include=TRUE}
 
-```
 
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
 
