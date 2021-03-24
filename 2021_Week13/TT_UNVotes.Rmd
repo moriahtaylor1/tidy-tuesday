@@ -1,0 +1,235 @@
+---
+title: "TidyTuesday - UN Votes"
+author: "Moriah Taylor"
+date: "3/23/2021"
+output: html_document
+---
+
+# This Week's Data
+
+The data this week comes from Harvard's Dataverse by way of Mine Çetinkaya-Rundel, David Robinson, and Nicholas Goguen-Compagnoni.
+
+Original Data citation:
+
+Citation: Erik Voeten "Data and Analyses of Voting in the UN General Assembly" Routledge Handbook of International Organization, edited by Bob Reinalda (published May 27, 2013). Available at SSRN: http://ssrn.com/abstract=2111149
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+library(tidytuesdayR)
+library(tidyverse)
+library(lubridate)
+library(ggdark)
+library(unvotes)
+library(extrafont)
+library(sysfonts)
+library(showtext)
+library(dplyr)
+library(readxl)
+library(countrycode)
+library(tidyr)
+library(forcats)
+library(Cairo)
+```
+
+
+# Load the Data
+
+Download this week's data on UN Voting utilizing code made available on the TidyTuesday GitHub.
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+# Get the Data
+# Code sourced from TidyTuesday GitHub
+# (https://github.com/rfordatascience/tidytuesday/tree/master/data/2021/2021-03-23)
+
+unvotes <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-23/unvotes.csv')
+roll_calls <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-23/roll_calls.csv')
+issues <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-23/issues.csv')
+```
+
+# Data Cleaning
+
+The data cleaning can be found in the [data-raw](https://github.com/dgrtwo/unvotes/blob/master/data-raw/un-data.R) folder of the package. 
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+vlevels <- c("yes", "abstain", "no")
+
+load("UNVotes2021.RData")
+
+un_votes <- completeVotes %>%
+  filter(vote <= 3) %>%
+  mutate(
+    country = countrycode(ccode, "cown", "country.name"),
+    country_code = countrycode(ccode, "cown", "iso2c"),
+    # Match based on old version of data from unvotes package
+    country_code = case_when(
+      country == "Czechoslovakia" ~ "CS",
+      country == "Yugoslavia" ~ "YU",
+      country == "German Democratic Republic" ~ "DD",
+      country == "Yemen People's Republic" ~ "YD",
+      TRUE ~ country_code
+    ),
+    country = if_else(!is.na(Countryname) & Countryname == "German Federal Republic", "Federal Republic of Germany", country)
+  ) %>%
+  select(rcid, country, country_code, vote) %>%
+  mutate(vote = as.character(vote)) %>%
+  mutate(vote = fct_recode(vote, yes = "1", abstain = "2", no = "3"))
+
+descriptions <- completeVotes %>%
+  select(session, rcid, abstain, yes, no, importantvote, date, unres, amend, para, short, descr, me, nu, di, hr, co, ec) %>%
+  distinct(rcid, .keep_all = TRUE)
+
+un_roll_calls <- descriptions %>%
+  select(rcid, session, importantvote:descr) %>%
+  mutate(rcid = as.integer(rcid),
+         date = as.Date(date)) %>%
+  arrange(rcid)
+
+un_roll_call_issues <- descriptions %>%
+  select(rcid, me:ec) %>%
+  gather(short_name, value, me:ec) %>%
+  mutate(rcid = as.integer(rcid),
+         value = as.numeric(value)) %>%
+  filter(value == 1) %>%
+  select(-value) %>%
+  mutate(issue = fct_recode(short_name,
+                            "Palestinian conflict" = "me",
+                            "Nuclear weapons and nuclear material" = "nu",
+                            "Colonialism" = "co",
+                            "Human rights" = "hr",
+                            "Economic development" = "ec",
+                            "Arms control and disarmament" = "di"))
+```
+
+# Data Exploration
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+#find out what kinds of issues are voted on
+unique(un_roll_call_issues$issue)
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+#add columns for year, month, and day
+un_roll_calls$year = format(as.Date(un_roll_calls$date, format="%d/%m/%Y"),"%Y")
+un_roll_calls$month = format(as.Date(un_roll_calls$date, format="%d/%m/%Y"),"%m")
+un_roll_calls$day = format(as.Date(un_roll_calls$date, format="%d/%m/%Y"),"%d")
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+#get rcids for nuclear issues from un_roll_call_issues
+nuclear_subset <- subset(un_roll_call_issues, short_name=="nu")
+nuclear_rcids <- unique(nuclear_subset$rcid)
+
+#subset un_roll_calls to only nuclear issues
+nuclear_roll_calls = subset(un_roll_calls, rcid %in% nuclear_rcids)
+
+#subset nuclear_roll_calls to cold war period
+cold_war = subset(nuclear_roll_calls, year>=1947 & year<=1991)
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+#tidy data to prepare for plot
+cold_war_nuclear_issues <- cold_war %>%
+  group_by(date) %>%
+  mutate(count_issues = length(unique(rcid))) %>%
+  mutate(month_decimal = as.numeric(month) * 0.08) %>%
+  mutate(x_axis = as.numeric(year) + month_decimal) %>%
+  select(date, year, month, day, count_issues, x_axis)
+data_ = cold_war_nuclear_issues
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+ #create dataframe for cold war events
+event = c("Korean War", "U-2 Incident", "Cuban Missile Crisis", "Strategic Arms Limitation Talks", "Soviets Invade Afghanistan", "Reunited Germany")
+x_end = c(1950.48, 1960.4, 1962.8, 1969.88, 1979.96, 1989.88)
+y_end = c(2.8, 2.1, 9, 2, 14, 18)
+y_ = c(4.8, 9, 14, 6, 16, 21)
+events = data.frame(event, x_end, y_, y_end)
+```
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+#import custom text
+font_add(family = "kalam", "Kalam-Bold.ttf")
+font_add(family = "montserrat-ital", "Montserrat-Italic.ttf")
+showtext.auto()
+loadfonts()
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+#create visualization
+plot <- ggplot(data=data_, aes(x=x_axis, y=count_issues, ymax=count_issues)) + 
+  geom_ribbon(ymin=-1, fill='#D25c07', alpha=0.5) +
+  scale_x_continuous(
+    breaks = seq(1948, 1990, 3),
+    labels = paste0(seq(1948, 1990, 3)),
+    limits = c(1948.56, 1991.16)
+  ) +
+  scale_y_continuous(
+    breaks = seq(0,26,2),
+    labels = paste0(seq(0,26,2)),
+    limits = c(1,26),
+  ) +
+  labs(
+    title = "GOING NUCLEAR",
+    subtitle = "Number of Nuclear Issues Addressed in UN sessions during the Cold War",
+    caption = "Source: UN Votes data | Moriah Taylor | Twitter: moriah_taylor58 | GitHub: moriahtaylor1"
+  ) + xlab("") + ylab("") +
+  theme(
+    axis.text.x = element_text(size = 14), 
+    axis.text.y = element_text(size = 14), 
+    axis.ticks = element_blank(),
+    panel.background = element_rect(fill = "#dadbde"),
+    plot.background = element_rect(fill = "#dadbde"),
+    panel.grid.major = element_line(color = "#848690"),
+    axis.line = element_line(color = "#848690"),
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 25), 
+    plot.subtitle = element_text(hjust = 0.5, size = 18), 
+    plot.caption = element_text(size = 12)) + 
+      dark_theme_light(base_family="kalam") +
+  #add lines for each event
+  geom_segment(aes(x=events$x_end[1], xend=events$x_end[1], y=events$y_[1], yend=events$y_end[1]), size=.3) +
+  geom_segment(aes(x=events$x_end[2], xend=events$x_end[2], y=events$y_[2], yend=events$y_end[2]), size=.3) +
+  geom_segment(aes(x=events$x_end[3], xend=events$x_end[3], y=events$y_[3], yend=events$y_end[3]), size=.3) +
+  geom_segment(aes(x=events$x_end[4], xend=events$x_end[4], y=events$y_[4], yend=events$y_end[4]), size=.3) +
+  geom_segment(aes(x=events$x_end[5], xend=events$x_end[5], y=events$y_[5], yend=events$y_end[5]), size=.3) +
+  geom_segment(aes(x=events$x_end[6], xend=events$x_end[6], y=events$y_[6], yend=events$y_end[6]), size=.3) +
+  #add dots for each event
+  geom_point(aes(x=events$x_end[1], y=events$y_[1]), shape=16, size=2) +
+  geom_point(aes(x=events$x_end[2], y=events$y_[2]), shape=16, size=2) +
+  geom_point(aes(x=events$x_end[3], y=events$y_[3]), shape=16, size=2) +
+  geom_point(aes(x=events$x_end[4], y=events$y_[4]), shape=16, size=2) +
+  geom_point(aes(x=events$x_end[5], y=events$y_[5]), shape=16, size=2) +
+  geom_point(aes(x=events$x_end[6], y=events$y_[6]), shape=16, size=2) +
+  #add event info
+  geom_text(aes(x= events$x_end[1], y=events$y_[1]+1, 
+                label=events$event[1]), family="montserrat-ital", size=2.5) + 
+  geom_text(aes(x= events$x_end[2], y=events$y_[2]+1, 
+                label=events$event[2]), family="montserrat-ital", size=2.5) + 
+  geom_text(aes(x= events$x_end[3], y=events$y_[3]+1, 
+                label=events$event[3]), family="montserrat-ital", size=2.5) + 
+  geom_text(aes(x= events$x_end[4], y=events$y_[4]+1, 
+                label=events$event[4]), family="montserrat-ital", size=2.5) + 
+  geom_text(aes(x= events$x_end[5], y=events$y_[5]+1, 
+                label=events$event[5]), family="montserrat-ital", size=2.5) + 
+  geom_text(aes(x= events$x_end[6], y=events$y_[6]+1, 
+                label=events$event[6]), family="montserrat-ital", size=2.5)
+plot
+ggsave("nuclear_issues_plot.pdf")
+```
+
+
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+Sys.setenv(R_GSCMD = "C:/Program Files/gs/gs9.53.3/bin/gswin64c.exe")
+embed_fonts("nuclear_issues_plot.pdf")
+```
+
+----------------------------------
+
+#### TidyTuesday
+
+Join the R4DS Online Learning Community in the weekly #TidyTuesday event!
+Every week we post a raw dataset, a chart or article related to that dataset, and ask you to explore the data.
+While the dataset will be “tamed”, it will not always be tidy! As such you might need to apply various R for Data Science techniques to wrangle the data into a true tidy format.
+The goal of TidyTuesday is to apply your R skills, get feedback, explore other’s work, and connect with the greater #RStats community!
+As such we encourage everyone of all skills to participate!
