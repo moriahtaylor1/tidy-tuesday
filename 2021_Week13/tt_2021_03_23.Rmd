@@ -140,8 +140,6 @@ nuclear_roll_calls = subset(un_roll_calls, rcid %in% nuclear_rcids)
 
 #subset nuclear_roll_calls to cold war period
 cold_war = subset(nuclear_roll_calls, year>=1947 & year<=1991)
-
-
 ```
 
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
@@ -151,6 +149,13 @@ cold_war_nuclear_issues <- cold_war %>%
   mutate(month_decimal = as.numeric(month) * 0.08) %>%
   mutate(x_axis = as.numeric(year) + month_decimal) %>%
   select(date, year, month, day, count_issues, x_axis)
+
+cold_war_nuclear_issues2 <- cold_war %>%
+  mutate(month_decimal = as.numeric(month) * 0.08) %>%
+  mutate(x_axis = as.numeric(year) + month_decimal) %>%
+  group_by(x_axis) %>%
+  mutate(count_issues = length(unique(rcid))) %>%
+  select(x_axis, count_issues)
 ```
 
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
@@ -162,8 +167,9 @@ loadfonts()
 #create visualization
 ggplot(cold_war_nuclear_issues, aes(x=x_axis, y=count_issues, ymax=count_issues)) +
   #geom_ribbon(y=count_issues, ymin=0, ymax=19, color = '#D25c07') + #color="black", fill = '#D25c07'
-  #geom_area(aes(fill='#D25c07')) +
+  #geom_area(fill='#D25c07') +
   #geom_line(aes(color='#D25c07')) +
+  geom_point(size=2, color='#D25c07') + 
   geom_ribbon(ymin=-1, fill='#D25c07', alpha=0.5) +
   scale_x_continuous(
     breaks = seq(1948, 1990, 3),
@@ -191,8 +197,8 @@ ggplot(cold_war_nuclear_issues, aes(x=x_axis, y=count_issues, ymax=count_issues)
     panel.grid.major = element_line(color = "#848690"),
     panel.grid.minor = element_blank(),
     axis.line = element_line(color = "#848690"),
-    plot.title = element_text(hjust = 0.5, color = "#7e2b04", size = 25),
-    plot.subtitle = element_text(hjust = 0.5, color = "#7e2b04", size = 18),
+    plot.title = element_text(hjust = 0.5, color = "#581e03", size = 25),
+    plot.subtitle = element_text(hjust = 0.5, color = "#581e03", size = 18),
     plot.caption = element_text(color = "#3f1602", size = 12),
     text = element_text(family = "Bahnschrift")
 
