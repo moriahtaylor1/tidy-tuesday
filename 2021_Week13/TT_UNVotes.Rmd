@@ -7,11 +7,9 @@ output: html_document
 
 # This Week's Data
 
-The data this week comes from Harvard's Dataverse by way of Mine Çetinkaya-Rundel, David Robinson, and Nicholas Goguen-Compagnoni.
+The data this week comes from Harvard's Dataverse by way of Mine Çetinkaya-Rundel, David Robinson, and Nicholas Goguen-Compagnoni. \textcolor{blue}{*Interestingly enough, Mine was my instructor for my Stats101 course in college - small world!*}
 
-Original Data citation:
-
-Citation: Erik Voeten "Data and Analyses of Voting in the UN General Assembly" Routledge Handbook of International Organization, edited by Bob Reinalda (published May 27, 2013). Available at SSRN: http://ssrn.com/abstract=2111149
+Original Data Citation: Erik Voeten "Data and Analyses of Voting in the UN General Assembly" Routledge Handbook of International Organization, edited by Bob Reinalda (published May 27, 2013). Available at SSRN: http://ssrn.com/abstract=2111149.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -35,9 +33,8 @@ library(Cairo)
 ```
 
 
-# Load the Data
-
-Download this week's data on UN Voting utilizing code made available on the TidyTuesday GitHub.
+## Load the Data
+First step, as always, was to download this week's data on UN Voting utilizing code made available on the TidyTuesday GitHub.
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
 # Get the Data
 # Code sourced from TidyTuesday GitHub
@@ -48,10 +45,8 @@ roll_calls <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience
 issues <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-23/issues.csv')
 ```
 
-# Data Cleaning
-
-The data cleaning can be found in the [data-raw](https://github.com/dgrtwo/unvotes/blob/master/data-raw/un-data.R) folder of the package. 
-
+## Data Cleaning
+The code data cleaning can be found in the [data-raw](https://github.com/dgrtwo/unvotes/blob/master/data-raw/un-data.R) folder of the package. 
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
 vlevels <- c("yes", "abstain", "no")
 
@@ -102,13 +97,19 @@ un_roll_call_issues <- descriptions %>%
                             "Arms control and disarmament" = "di"))
 ```
 
-# Data Exploration
+## Data Exploration
 
+First, I looked at what issues are addressed at UN meetings.
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
 #find out what kinds of issues are voted on
 unique(un_roll_call_issues$issue)
 ```
 
+The topic of nuclear weapons and material caught my attention, so I decided to create a visual showing the number of times this issue was addressed in UN meetings during the Cold War period. To make it a little bit more informative/interesting, I also decided to add some "timeline events" relating to the Cold War. I chose a few based off of this list by JB Berglund (https://www.preceden.com/timelines/46853-the-top-10-events-of-the-cold-war).
+  
+  
+## Data Wrangling
+My first step for data wrangling was to add separate columns for month, day, and year. I did this proactively, as I suspected the date format would cause me some difficulties.
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
 #add columns for year, month, and day
 un_roll_calls$year = format(as.Date(un_roll_calls$date, format="%d/%m/%Y"),"%Y")
@@ -116,6 +117,7 @@ un_roll_calls$month = format(as.Date(un_roll_calls$date, format="%d/%m/%Y"),"%m"
 un_roll_calls$day = format(as.Date(un_roll_calls$date, format="%d/%m/%Y"),"%d")
 ```
 
+Next, I had to find a way to identify which UN sessions addressed nuclear weapons. This task wasn't as straightforward because the topics addressed were contained in the `un_roll_call_issues` dataset whereas the dates of the sessions were in the `un_roll_calls` dataset. I started by getting the roll call id numbers from the issues dataset. Then, I used these id numbers to select rows from the roll calls which corresponded to meetings in which nuclear weapons were addressed as an issue. Finally, I subset the data to be between the years 1947 and 1991 so that the data represents events which occurred during the Cold War era.
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
 #get rcids for nuclear issues from un_roll_call_issues
 nuclear_subset <- subset(un_roll_call_issues, short_name=="nu")
@@ -128,6 +130,13 @@ nuclear_roll_calls = subset(un_roll_calls, rcid %in% nuclear_rcids)
 cold_war = subset(nuclear_roll_calls, year>=1947 & year<=1991)
 ```
 
+## Visualization - Preparation
+
+Before I made my visualization, there were a few tasks I had to complete first, namely:  
+    * **(1) Group my data by date in a way which would facilitate plotting -** To accomplish this, I converted the month to a numerical value and added it to year  
+    * **(2) Create a dataframe containing the information about the events I wanted to include**  
+    * **(3) Add some custom fonts**  
+
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
 #tidy data to prepare for plot
 cold_war_nuclear_issues <- cold_war %>%
@@ -137,17 +146,16 @@ cold_war_nuclear_issues <- cold_war %>%
   mutate(x_axis = as.numeric(year) + month_decimal) %>%
   select(date, year, month, day, count_issues, x_axis)
 data_ = cold_war_nuclear_issues
-```
 
-```{r, message=FALSE, warning=FALSE, include=TRUE}
- #create dataframe for cold war events
+
+#create dataframe for cold war events
 event = c("Korean War", "U-2 Incident", "Cuban Missile Crisis", "Strategic Arms Limitation Talks", "Soviets Invade Afghanistan", "Reunited Germany")
 x_end = c(1950.48, 1960.4, 1962.8, 1969.88, 1979.96, 1989.88)
-y_end = c(2.8, 2.1, 9, 2, 14, 18)
-y_ = c(4.8, 9, 14, 6, 16, 21)
+y_end = c(2.8, 2.1, 9, 2, 14, 18)   #adjusted these values manually using trial and error for each plot generated
+y_ = c(4.8, 9, 14, 6, 16, 21)       #adjusted these values manually using trial and error for each plot generated
 events = data.frame(event, x_end, y_, y_end)
-```
-```{r, message=FALSE, warning=FALSE, include=TRUE}
+
+
 #import custom text
 font_add(family = "kalam", "Kalam-Bold.ttf")
 font_add(family = "montserrat-ital", "Montserrat-Italic.ttf")
@@ -155,25 +163,30 @@ showtext.auto()
 loadfonts()
 ```
 
+## Visualization - Results
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
 #create visualization
-plot <- ggplot(data=data_, aes(x=x_axis, y=count_issues, ymax=count_issues)) + 
-  geom_ribbon(ymin=-1, fill='#D25c07', alpha=0.5) +
+plot <- ggplot(data=data_, aes(x=x_axis, y=count_issues, ymax=count_issues)) +  #line graph
+  geom_ribbon(ymin=-1, fill='#D25c07', alpha=0.5) +    #fill under line graph
+  #x-axis
   scale_x_continuous(
     breaks = seq(1948, 1990, 3),
     labels = paste0(seq(1948, 1990, 3)),
     limits = c(1948.56, 1991.16)
   ) +
+  #y-axis
   scale_y_continuous(
     breaks = seq(0,26,2),
     labels = paste0(seq(0,26,2)),
     limits = c(1,26),
   ) +
+  #titles
   labs(
     title = "GOING NUCLEAR",
     subtitle = "Number of Nuclear Issues Addressed in UN sessions during the Cold War",
     caption = "Source: UN Votes data | Moriah Taylor | Twitter: moriah_taylor58 | GitHub: moriahtaylor1"
   ) + xlab("") + ylab("") +
+  #styling
   theme(
     axis.text.x = element_text(size = 14), 
     axis.text.y = element_text(size = 14), 
@@ -213,16 +226,23 @@ plot <- ggplot(data=data_, aes(x=x_axis, y=count_issues, ymax=count_issues)) +
                 label=events$event[5]), family="montserrat-ital", size=2.5) + 
   geom_text(aes(x= events$x_end[6], y=events$y_[6]+1, 
                 label=events$event[6]), family="montserrat-ital", size=2.5)
-plot
-ggsave("nuclear_issues_plot.pdf")
+#plot
+#save plot to pdf
+#ggsave("nuclear_issues_plot.pdf")
 ```
 
-
+![Going Nuclear: A TidyTuesday Creation](nuclear_issues_plot.png)
 
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
-Sys.setenv(R_GSCMD = "C:/Program Files/gs/gs9.53.3/bin/gswin64c.exe")
-embed_fonts("nuclear_issues_plot.pdf")
+#show R where GhostScript is
+    #Sys.setenv(R_GSCMD = "C:/Program Files/gs/gs9.53.3/bin/gswin64c.exe")    #commented out to compile output
+#embed fonts into the pdf generated earlier
+    #embed_fonts("nuclear_issues_plot.pdf")    #commented out to compile output
 ```
+## Acknowledgments
+### Giving Credit Where Credit is Due
+
+There are many different resources I used to get to the end result, the first of which is code from @etiennebacher’s submission last week (code: https://t.co/OyTCaqSYHI?amp=1). I knew I wanted to do an area chart with some annotations and since I didn’t even know where to start, I used this as a reference for beginning to build this visual. Another significant source I referenced was an article called “Visualizing Real World Data Timelines in R” authored by Sophia Shalhout and David Michael Miller. This can be found on The Miller Lab’s website: https://t.co/OyTCaqSYHI?amp=1. In general, I also referenced the code of other members of the R4DS community that have been posted on GitHub, as well as the guides given on the R Graph Gallery website (r-graph-gallery.com). 
 
 ----------------------------------
 
