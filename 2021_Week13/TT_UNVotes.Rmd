@@ -7,7 +7,7 @@ output: html_document
 
 # This Week's Data
 
-The data this week comes from Harvard's Dataverse by way of Mine Çetinkaya-Rundel, David Robinson, and Nicholas Goguen-Compagnoni. \textcolor{blue}{*Interestingly enough, Mine was my instructor for my Stats101 course in college - small world!*}
+The data this week comes from Harvard's Dataverse by way of Mine Çetinkaya-Rundel, David Robinson, and Nicholas Goguen-Compagnoni. *Interestingly enough, Mine was my instructor for my Stats101 course in college - small world!*
 
 Original Data Citation: Erik Voeten "Data and Analyses of Voting in the UN General Assembly" Routledge Handbook of International Organization, edited by Bob Reinalda (published May 27, 2013). Available at SSRN: http://ssrn.com/abstract=2111149.
 
