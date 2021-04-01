@@ -11,9 +11,21 @@ The data this week comes from Harvard's Dataverse by way of Mine Çetinkaya-Rund
 
 Original Data Citation: Erik Voeten "Data and Analyses of Voting in the UN General Assembly" Routledge Handbook of International Organization, edited by Bob Reinalda (published May 27, 2013). Available at SSRN: http://ssrn.com/abstract=2111149.
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+
+
+
+
+```{r}
+#import custom text
+font_add(family = "family_name", "font_file.ttf")
+showtext.auto()
+loadfonts()
 ```
+
+
+
+
 
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
 library(tidytuesdayR)

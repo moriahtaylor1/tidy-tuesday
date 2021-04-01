@@ -1,0 +1,268 @@
+---
+title: "TT_MakeupShades"
+author: "Moriah Taylor"
+date: "3/29/2021"
+output: html_document
+---
+
+# This Week's Data - Makeup Shades
+
+The data this week comes from [The Pudding](https://github.com/the-pudding/data/tree/master/foundation-names). They have a corresponding [article](https://pudding.cool/2021/03/foundation-names/) related to this data.
+
+> First Place. Lead Role. Number One. When things are arranged in a sequence, we have a mild obsession with being the “first.” You want the blue ribbon. To be on the first page of search results. To have your story above the fold. Afterall, we prioritize the things that come first.
+> 
+> When beauty brands label their foundation shades with sequential numbers, they are implicitly prioritizing those at the beginning of the sequence. These products become more accessible to customers because they are often higher on store shelves and are not hidden behind the “See More” button on websites..
+> 
+> We found 130 products on Sephora’s and Ulta’s websites that use a sequential number system to label their shades. Of those, 97% put their lighter shades, and thus the customers that use those shades, first.
+
+This is an interesting dataset, and many thanks to [Ofunne Amaka](https://pudding.cool/author/ofunne-amaka) and [Amber Thomas](https://pudding.cool/author/amber-thomas) for sharing the article, the data, and the code behind the article. There's a lot to the actual data collection itself, as there's a lot of regex, data cleaning, web scraping, etc.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message=FALSE, warning=FALSE, include=TRUE}
+#load packages
+library(tidytuesdayR)
+library(tidyverse)
+library(lubridate)
+library(extrafont)
+library(showtext)
+library(dplyr)
+library(patchwork)
+```
+
+## Load the Data
+First step, as always, was to download this week's data on Makeup Shades utilizing code made available on the TidyTuesday GitHub.
+```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+# Get the Data
+
+# Read in with tidytuesdayR package 
+# Install from CRAN via: install.packages("tidytuesdayR")
+# This loads the readme and all the datasets for the week of interest
+
+tuesdata <- tidytuesdayR::tt_load(2021, week = 14)
+
+sephora <- tuesdata$sephora
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+sephora <- tuesdata$sephora
+ulta <- tuesdata$ulta
+allShades <- tuesdata$allShades
+allCategories <- tuesdata$allCategories
+allNumbers <- tuesdata$allNumbers
+```
+
+## Data Wrangling
+Shade ranges of foundations can vary greatly depending on the brand. There were 4 different kinds of brands I wanted to take a closer look at - black-owned beauty brands, best-selling brands, affordable brands, and luxury brands. The list of products I want to focus on are:  
+  
+    **Black-Owned Beauty Brands:**
+    - "Beauty Bakerie InstaBake Aqua Glass Foundation" 
+    - "BLK/OPL TRUE COLOR Skin Perfecting Stick Foundation SPF 15"
+    - "FENTY BEAUTY by Rihanna Pro Filt'r Soft Matte Longwear Foundation"
+    - "Juvia's Place I Am Magic Foundation"
+    - "PAT McGRATH LABS Sublime Perfection Foundation"
+    - "UOMA Beauty Say What?! Foundation"   
+  
+    **Best-Selling:**
+    - "Estée Lauder Double Wear Stay-in-Place Makeup"
+    - "KVD Vegan Beauty Lock-It Foundation"
+    - "MAC Studio Fix Fluid SPF 15 Foundation"
+    - "NARS Natural Radiant Longwear Foundation"
+    - "Tarte Face Tape Foundation" 
+    - "Too Faced Born This Way Foundation"  
+  
+    **Affordable Brands:**
+    - "ColourPop Pretty Fresh Foundation"
+    - "e.l.f. Cosmetics Flawless Finish Foundation"
+    - "NYX Professional Makeup Can't Stop Won't Stop Foundation"
+    - "SEPHORA COLLECTION 10 Hour Wear Perfection Foundation" 
+    - "ULTA Adjustable Coverage Foundation"
+    - "Wet n Wild PhotoFocus Liquid Foundation"  
+  
+    **Luxury Brands:**
+    - "Armani Beauty Luminous Silk Perfect Glow Flawless Oil-Free Foundation"
+    - "Dior BACKSTAGE Face & Body Foundation"
+    - "Givenchy Matissime Velvet Radiant Mattifying Fluid Foundation SPF 20"
+    - "Gucci Fluide De Beauté Fini Naturel - Natural Finish Fluid Foundation"
+    - "TOM FORD Traceless Soft Matte Foundation"
+    - "Yves Saint Laurent All Hours Longwear Natural Matte Foundation"
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+##black-owned brands##
+beauty_bakerie <- allShades %>%
+  filter(fullproductname == "Beauty Bakerie InstaBake Aqua Glass Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+blk_opl <- allShades %>%
+  filter(fullproductname == "BLK/OPL TRUE COLOR Skin Perfecting Stick Foundation SPF 15") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+fenty <- allShades %>%
+  filter(fullproductname == "FENTY BEAUTY by Rihanna Pro Filt'r Soft Matte Longwear Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+juvias_place <- allShades %>%
+  filter(fullproductname == "Juvia's Place I Am Magic Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+pat_mcgrath <- allShades %>%
+  filter(fullproductname == "PAT McGRATH LABS Sublime Perfection Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+uoma <- allShades %>%
+  filter(fullproductname == "UOMA Beauty Say What?! Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+
+##best-selling brands##
+estee_lauder <- allShades %>%
+  filter(fullproductname == "Estée Lauder Double Wear Stay-in-Place Makeup") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+kvd <- allShades %>%
+  filter(fullproductname == "KVD Vegan Beauty Lock-It Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+mac <- allShades %>%
+  filter(fullproductname == "MAC Studio Fix Fluid SPF 15 Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+nars <- allShades %>%
+  filter(fullproductname == "NARS Natural Radiant Longwear Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+tarte <- allShades %>%
+  filter(fullproductname == "Tarte Face Tape Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+too_faced <- allShades %>%
+  filter(fullproductname == "Too Faced Born This Way Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+##affordable brands##
+colourpop <- allShades %>%
+  filter(fullproductname == "ColourPop Pretty Fresh Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+elf <- allShades %>%
+  filter(fullproductname == "e.l.f. Cosmetics Flawless Finish Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+nyx <- allShades %>%
+  filter(fullproductname == "NYX Professional Makeup Can't Stop Won't Stop Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+sephora <- allShades %>%
+  filter(fullproductname == "SEPHORA COLLECTION 10 Hour Wear Perfection Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+ulta <- allShades %>%
+  filter(fullproductname == "ULTA Adjustable Coverage Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+wetNwild <- allShades %>%
+  filter(fullproductname == "Wet n Wild PhotoFocus Liquid Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+##luxury brands##
+armani <- allShades %>%
+  filter(fullproductname == "Armani Beauty Luminous Silk Perfect Glow 
+         Flawless Oil-Free Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+dior <- allShades %>%
+  filter(fullproductname == "Dior BACKSTAGE Face & Body Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+givency <- allShades %>%
+  filter(fullproductname == "Givenchy Matissime Velvet Radiant Mattifying 
+         Fluid Foundation SPF 20") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+gucci <- allShades %>%
+  filter(fullproductname == "Gucci Fluide De Beauté Fini Naturel - 
+         Natural Finish Fluid Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+tom_ford <- allShades %>%
+  filter(fullproductname == "TOM FORD Traceless Soft Matte Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+
+yves_st_laurent <- allShades %>%
+  filter(fullproductname == "Yves Saint Laurent All Hours Longwear Natural Matte Foundation") %>%
+  arrange(desc(lightness)) %>%
+  select(brand, product, lightness, hex) %>%
+  mutate(value = 1)
+```
+
+##Data Visualization
+For my data visualization, I was inspired by [wjtorres](https://github.com/wjtorres/tidytuesday/tree/master/2021_03_30) and their pie graphs.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+
+```
+
