@@ -2,7 +2,9 @@
 title: "TT_MakeupShades"
 author: "Moriah Taylor"
 date: "3/29/2021"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 # This Week's Data - Makeup Shades
@@ -31,11 +33,12 @@ library(showtext)
 library(dplyr)
 library(patchwork)
 library(ragg)
+library(rmarkdown)
 ```
 
 ## Load the Data
 First step, as always, was to download this week's data on Makeup Shades utilizing code made available on the TidyTuesday GitHub.
-```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 # Get the Data
 
 # Read in with tidytuesdayR package 
@@ -47,7 +50,7 @@ tuesdata <- tidytuesdayR::tt_load(2021, week = 14)
 sephora <- tuesdata$sephora
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
 sephora <- tuesdata$sephora
 ulta <- tuesdata$ulta
 allShades <- tuesdata$allShades
@@ -90,7 +93,7 @@ Shade ranges of foundations can vary greatly depending on the brand. There were 
     - "TOM FORD Traceless Soft Matte Foundation"
     - "Yves Saint Laurent All Hours Longwear Natural Matte Foundation"
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
 allShades$fullproductname <- paste(allShades$brand, allShades$product, sep=" ")
 ##black-owned brands##
 beauty_bakerie <- allShades %>%
@@ -242,10 +245,10 @@ yves_st_laurent <- allShades %>%
   mutate(value = 1)
 ```
 
-##Data Visualization
-For my data visualization, I was inspired by [wjtorres](https://github.com/wjtorres/tidytuesday/tree/master/2021_03_30) and their pie graphs.
+## Data Visualization  
+For my data visualization, I was inspired by Jackie Torres whose code can be found at https://github.com/wjtorres/tidytuesday/tree/master/2021_03_30.
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
 #add custom text
 font_add(family = "patrick", "PatrickHand-Regular.ttf")
 showtext.auto()
@@ -305,7 +308,7 @@ plot_theme3 <- theme(
 )
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
 ##black-owned beauty plots##
 black_owned_plot1 <- beauty_bakerie %>%
   ggplot(aes(x="", y = value, fill = hex)) +
@@ -378,7 +381,7 @@ ggsave("black_owned_plots.png",
        device = agg_png(width = 7, height = 5, units = "in", res = 300))
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
 ##best-selling brands plots##
 best_selling_plot1 <- estee_lauder %>%
   ggplot(aes(x="", y = value, fill = hex)) +
@@ -451,7 +454,7 @@ ggsave("best_selling_plots.png",
        device = agg_png(width = 7, height = 5, units = "in", res = 300))
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
 ##afforable brands plots##
 affordable_plot1 <- colourpop %>%
   ggplot(aes(x="", y = value, fill = hex)) +
@@ -525,7 +528,7 @@ ggsave("affordable_plots.png",
        device = agg_png(width = 7, height = 5, units = "in", res = 300))
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
 ##luxury brands plots##
 luxury_plot1 <- armani %>%
   ggplot(aes(x="", y = value, fill = hex)) +
@@ -599,25 +602,25 @@ ggsave("luxury_plots.png",
        device = agg_png(width = 7, height = 5, units = "in", res = 300))
 ```
 
-##Noticeable Trends
-###Black-Owned Beauty Brands
-![](black_owned_plots.png)
+## Noticeable Trends  
+### Black-Owned Beauty Brands  
+![](black_owned_plots.png)  
 When compared to the other categories, black-owned beauty brands tend to have more shades available for those with medium and dark skin tones, but the approach differs depending on the company. **BLK/OPL's** *TRUE COLOR Skin Perfecting Stick Foundation* only has 12 colors available and all of these shades are for medium to dark skin tones. **Beauty Bakerie's** *InstaBake Aqua Glass Foundation*, **Fenty Beauty's** *Pro Filt'r Soft Matte Longwear Foundation*, **Juvia's Place's** *I Am Magic Foundation*, and **PAT McGRATH LABS's** *Sublime Perfection Foundation* all boast between 30 and 50 shades which range from very light to dark. Interestingly, although the **UOMA Beauty's** *Say What?! Foundation* has 51 shades in its range, the darkest one would only be suitable for medium skin tones. This could be a subconcious result of colorism which still persists throughout the black community *(those who are lighter and more fair-skinned tend to be more valued and revered by their peers than those who are dark-skinned who are heavily discriminated against both within and outside of the black community)*.
-
-###Best-Selling Beauty Brands
-![](best_selling_plots.png)
+  
+### Best-Selling Beauty Brands  
+![](best_selling_plots.png)  
 Best-selling brands have an increased ability to provide inclusive shade ranges because the volume they are able to produce is much higher than smaller, indie brands. However, this doesn't always mean that inclusivity is accomplished purely based on numbers of shades. **Estée Lauder's** *Double Wear Stay-in-Place Makeup* is offered in 56 shades and while there are a multitude of options in the tan and medium range, there is a serious lack of dark shades. **MAC's** *Studio Fix Fluid SPF 15 Foundation* has one of the most extensive shade ranges, offering 63 shades, but 75% of these shades are in the light to light-tan range. **NARS's** *Natural Radiant Longwear Foundation* only has 34 shades and does have multiple medium shades, but lacks any truly dark shades. **KVD Vegan Beauty's** *Lock-It Foundation*, **Tarte's** *Face Tape Foundation*, **Too Faced's** *Born This Way Foundation* all have approximately 40 shades ranging from very fair to dark, although their range of medium shades vary.
-
-###Affordable Brands
-![](affordable_plots.png)
-The foundations from **ColourPop**, **e.l.f. Cosmetics**, **NYX Professional Makeup**, and **SEPHORA COLLECTION** seem to be pretty inclusive, offering a wide range of shades from light to dark. I was pleasantly surprised to learn that the **SEPHORA COLLECTION *10-Hour Wear Perfection Foundation* ** boasts 60 shades! Unfortunately, not all of these brands live up to that. **ULTA *Adjustable Coverage Foundation* ** only has 20 shades and the darkest shade could be described as a dark tan. **Wet n Wild *PhotoFocus Liquid Foundation* ** only has 18 shades and only 25% of those shades are darker than light-tan.
-
-###Luxury Brands
-![](luxury_plots.png)
+  
+### Affordable Brands  
+![](affordable_plots.png)  
+The foundations from **ColourPop**, **e.l.f. Cosmetics**, **NYX Professional Makeup**, and **SEPHORA COLLECTION** seem to be pretty inclusive, offering a wide range of shades from light to dark. I was pleasantly surprised to learn that the **SEPHORA COLLECTION's** *10-Hour Wear Perfection Foundation* boasts 60 shades! Unfortunately, not all of these brands live up to that. **ULTA's** *Adjustable Coverage Foundation* only has 20 shades and the darkest shade could be described as a dark tan. **Wet n Wild's** *PhotoFocus Liquid Foundation* only has 18 shades and only 25% of those shades are darker than light-tan.
+  
+### Luxury Brands  
+![](luxury_plots.png)  
 What I expected to find with the luxury brands of foundation were small ranges of shades and a considerable deficit of tan and dark shades. I found that the luxury brands actually did offer numerous shades in their foundations, besides **Givency** which only has 12 shades in its *Matissime Velvet Radiant Mattifying Fluid Foundation*, of which only one is medium and one is tan, the rest being fair or light. The least inclusive foundation is **Armani Beauty's** *Luminous Silk Perfect Glow Flawless Oil-Free Foundation* which offers 54 shades and disturbingly, only two of those shades are darker than a light-tan. **Dior's** *BACKSTAGE Face & Body Foundation* is somewhat of an interesting case in which there are some tan and dark shades (although there certainly could and should be more) but this foundation also has a much more extensive selection for fair skin tones than most others in this report. The foundations presented here from **Gucci**, **TOM FORD**, and **Yves Saint Laurent** all boast about 40 shades in their ranges and have a decent selection for medium and dark skin tones. One interesting thing to note here is the tone of these products. All of the shades in **Gucci's** *Fluide De Beauté Fini Naturel - Natural Finish Fluid Foundation* appear to lean warm-toned, which all of the shades in **TOM FORD's** *Traceless Soft Matte Foundation* have neutral or cool tones. A common problem with brands that try to be inclusive of tan and dark skin tones is that they tend to make all of the shades warm-toned and if they do have cool-toned shades, they don't seem to match up well with real skin. In this case, it seems that the entire line for each of these brands leans towards a certain tone across the board.
-
+  
 ----------------------------------
-
+  
 #### TidyTuesday
 
 Join the R4DS Online Learning Community in the weekly #TidyTuesday event!
