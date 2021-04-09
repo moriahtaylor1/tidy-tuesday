@@ -136,7 +136,7 @@ ggsave("net_area_plot_2000.png",
        plot = net_area_plot_2000,
        device = agg_png(width = 7, height = 5, units = "in", res = 300))
 ```
-![](net_area_plot_2015)
+![](net_area_plot_2000.png)
 ```{r, message=FALSE, warning=FALSE, include=TRUE}
 #select forest area data from 2015
 net_forest_area_2015 <- forest %>%
@@ -159,7 +159,7 @@ ggsave("net_area_plot_2015.png",
        plot = net_area_plot_2015,
        device = agg_png(width = 7, height = 5, units = "in", res = 300))
 ```
-![](net_area_plot_2015)
+![](net_area_plot_2015.png)
   
 ******
   
