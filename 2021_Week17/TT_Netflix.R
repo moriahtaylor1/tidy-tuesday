@@ -58,7 +58,7 @@ plot_theme <- theme(
     geom_bar(stat="identity", fill="#E50914") + scale_y_continuous(expand = c(0,0.3)) +
   geom_text(aes(label=n, family="bold"), hjust=1.5, size=15, color="black") +
   labs(title="Who's Who at Netflix",
-       subtitle = "<p style=color:white>Most movie buffs are familiar with names such as Scorsese, Spielberg, and Tarantino. So who are these Netflix movie <br>directors with over a dozen accreditations? Campos/Suter, Raboy, Karas and Chapman, - although Karas is much <br>more well-known for his work producing TV shows such as Superstore, Parks & Rec, and The Unicorn.</p>",
+       subtitle = "<p style=color:white>Most movie buffs are familiar with names such as Scorsese, Spielberg, and Tarantino. So who are these Netflix movie <br>directors with over a dozen accreditations? Campos/Suter, Raboy, Karas and Chapman are all producers of Netflix comedy specials<br>- although Karas is much more well-known for his work producing TV shows such as Superstore, Parks & Rec, and The Unicorn.</p>",
        caption = "[ Moriah Taylor  |  #TidyTuesday Week 17  |  Twitter: moriah_taylor58  |  GitHub: moriahtaylor1 ]") +
     scale_x_discrete(limits=directors_df$directors) + xlab("") + ylab("") +
   coord_flip() + plot_theme)
