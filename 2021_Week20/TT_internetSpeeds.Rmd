@@ -1,0 +1,231 @@
+---
+title: '#TidyTuesday'
+subtitle: 'Week 20'
+author: "Moriah Taylor"
+date: "5/13/2021"
+output: pdf_document
+---
+
+
+# This Week's Data - Internet Access
+
+The data this week comes from [Microsoft](https://github.com/microsoft/USBroadbandUsagePercentages) by way of [The Verge](https://www.theverge.com/22418074/broadband-gap-america-map-county-microsoft-data).
+
+> If broadband access was a problem before 2020, the pandemic turned it into a crisis. As everyday businesses moved online, city council meetings or court proceedings became near-inaccessible to anyone whose connection couldn’t support a Zoom call. Some school districts started providing Wi-Fi hotspots to students without a reliable home connection. In other districts, kids set up in McDonald’s parking lots just to get a reliable enough signal to do their homework. After years of slowly widening, the broadband gap became impossible to ignore.
+
+Note that to map the areas you will likely need to geocode by zipcode, which can be accomplished with the [`{zipcodeR}` package](https://gavinrozzi.github.io/zipcodeR/). The [`{tigris}`](https://github.com/walkerke/tigris) can also help with Census shapefiles.
+
+`zipcodeR`
+
+> `zipcodeR` is an R package that makes working with ZIP codes in R easier. It provides data on all U.S. ZIP codes using multiple open data sources, making it easier for social science researchers and data scientists to work with ZIP code-level data in data science projects using R.
+> 
+> The latest update to zipcodeR includes new functions for searching ZIP codes at various geographic levels & geocoding.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Packages
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+#load packages
+library(tidytuesdayR) #tidy tuesday data
+library(tidyverse) #wrangling
+library(lubridate) #wrangling
+library(extrafont) #fonts
+library(showtext) #fonts
+library(ragg)  #save as png
+library(rmarkdown) #markdown
+library(maps)  #geocoding
+library(ggmap)  #geocoding
+library(ggthemes) #custom plot theme
+library(viridis)
+```
+
+## Load the Data
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+tuesdata <- tidytuesdayR::tt_load(2021, week = 20)
+```
+
+## Access the Data
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+speeds <- tuesdata$broadband
+zip_codes <- tuesdata$broadband_zip
+```
+
+## Wrangling
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+#rename columns
+names(speeds) <- c("state", "county_id", "subregion", "broadband_fcc", "broadband_usage")
+zip_codes <- zip_codes %>% rename(state = ST,
+                            subregion = "COUNTY NAME",
+                            county_id = "COUNTY ID",
+                            zipcode = "POSTAL CODE",
+                            broadband_usage = "BROADBAND USAGE")
+
+#tidy county names into common format
+speeds$county_name <- word(speeds$subregion, 1)
+speeds$county_name <- tolower(speeds$subregion)
+zip_codes$county_name <- word(zip_codes$subregion, 1)
+zip_codes$county_name <- tolower(zip_codes$subregion)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+#changing usage column to numeric
+speeds$broadband_usage <- as.numeric(speeds$broadband_usage)
+#creating percentage column
+speeds <- speeds %>%
+  mutate(broadband_perc = broadband_usage * 100)
+```
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+#subset data for states of interest
+nc <- speeds %>%
+  filter(state == "NC")
+
+ohio <- speeds %>%
+  filter(state == "OH")
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+#getting map data for each state that is ggplot-friendly
+nc_county <- map_data('county', 'north carolina')
+ohio_county <- map_data('county', 'ohio')
+
+nc_state <- map_data('state', 'north carolina')
+ohio_state <- map_data('state', 'ohio')
+
+#joining data on common counties
+nc_data <- inner_join(nc_county, nc, by="subregion")
+ohio_data <- inner_join(ohio_county, ohio, by="subregion")
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+
+
+
+#themes
+plot_theme <- theme(
+  # no title, will be labeled on webpage
+  plot.title = element_blank(),
+
+  # panel and plot background
+  panel.grid.major = element_blank(),
+  panel.grid.minor = element_blank(),
+  panel.background = element_rect(fill = "black"),
+  plot.background = element_rect(fill = "black"),
+  
+  # axis
+  axis.title.y = element_text(family="title", size=20, color="white"),
+  axis.text.y = element_blank(),
+  axis.text.x = element_text(family="title2", size=14, color="white"),
+  axis.ticks.x = element_blank(),
+  axis.ticks.y = element_blank(),
+  
+  #no legend
+  legend.position = "none"
+)
+
+```
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+nc_plot <- ggplot() + 
+  #state outline
+  geom_polygon(data = nc_state, aes(x=long, y=lat, group=group), color="black", fill=NA) +
+  
+  #county outline and fille
+  geom_polygon(data = nc_data, 
+               aes(x=long, y = lat, fill=broadband_usage, group=group), color="white") + 
+  
+  #coord_fixed(1.3) +
+  
+  scale_fill_viridis()
+
+  theme_void() +
+  
+  labs(fill=' ') 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+oh_broadband$COUNTY.NAME <- word(oh_broadband$COUNTY.NAME, 1)
+oh_broadband$COUNTY.NAME <- tolower(oh_broadband$COUNTY.NAME)
+names(oh_broadband)[names(oh_broadband) == "COUNTY.NAME"] <- "subregion"
+
+ms_data <- inner_join(ms, ms_broadband, by="subregion")
+oh_data <- inner_join(oh, oh_broadband, by="subregion")
+
+ms_data$BROADBAND.USAGE <- as.numeric(ms_data$BROADBAND.USAGE)
+
+oh_data$BROADBAND.USAGE <- as.numeric(oh_data$BROADBAND.USAGE)
+
+```
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+
+
+```
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+
+
+```
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+
+
+```
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+
+
+```
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+
+
+```
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+
+
+```
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+
+
+```
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+
+
+```
+
+
