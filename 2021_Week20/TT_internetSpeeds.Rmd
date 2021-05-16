@@ -88,6 +88,10 @@ nc <- speeds %>%
 
 ohio <- speeds %>%
   filter(state == "OH")
+
+#special case: van wert county
+#need to change for merge
+ohio[81,3] <- "van wert"
 ```
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
@@ -101,10 +105,14 @@ ohio_state <- map_data('state', 'ohio')
 #joining data on common counties
 nc_data <- merge(nc_county, nc, on="subregion")
 ohio_data <- merge(ohio_county, ohio, on="subregion")
+
+
+nc_data <- nc_data[order(-nc_data[,5]),]
+ohio_data <- ohio_data[order(-ohio_data[,5]),]
 ```
 
 
-#Plot Stylizing
+## Plot Stylizing
 ```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
 font_add(family = "regular", "Merriweather-Regular.ttf")
 showtext_auto()
@@ -183,3 +191,6 @@ ggsave("oh_broadband.png",
 
 oh_plot
 ```
+
+## Final Plots
+![](oh_broadband.png) ![](nc_broadband.png)
