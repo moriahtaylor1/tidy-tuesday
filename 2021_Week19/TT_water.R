@@ -61,7 +61,7 @@ my_theme <- theme(
 
 
 
-plot_title <- expression(atop(x="2007 AND 2008 WERE PEAK YEARS FOR THE INSTALLATION OF",
+plot_title <- expression(atop(x="2007 AND 2008 WERE PEAK YEARS FOR THE INSTALLATION",
                               y="OF WATER SOURCES IN UGANDA"))
 
 strips <- ggplot(uganda_installs, aes(x=reorder(install_year, -install_year), y=1, fill=n)) + 
