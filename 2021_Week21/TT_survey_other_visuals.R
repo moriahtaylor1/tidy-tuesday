@@ -6,11 +6,12 @@ library(showtext) #fonts
 library(ragg)  #save as png
 library(ggthemes) #custom plot theme
 library(ghibli)   #studio ghibli palettes
-library(tidytext)
-library(wordcloud)
-library(viridis)
-library(extrafont)
-library(showtext)
+library(tidytext) #text mining
+library(wordcloud)  #word cloud plot
+library(viridis)  #cb-friendly palettes
+library(extrafont)  #font
+library(showtext)  #font 
+
 
 #load data
 tuesdata <- tidytuesdayR::tt_load(2021, week = 21)
@@ -19,6 +20,8 @@ salaries <- tuesdata$survey
 #subset to computing and tech industry
 tech <- salaries %>% filter(industry=="Computing or Tech")
 
+
+##WORD CLOUD PLOT##
 job_title_free_wf <- tech %>%
   mutate(job_comment = as.character(additional_context_on_job_title)) %>%
   unnest_tokens(output = job_word,
@@ -31,18 +34,24 @@ job_title_free_wf <- tech %>%
   filter(n < 100) %>%
   ungroup()
 
-new_pal = c("#febf84", "#ef9773", "#da706b", '#bd4c69', "#982d68", "#6b1868", "#2f1063")
+#colors from discrete rocket palette from viridis package
+rocket_pal = c("#faebdd", "#f69c73", "#e83f3f", '#a11a5b', "#4c1d4b")
 
-job_wf_plot <- job_title_free_wf %>%
+
+(job_wf_plot <- job_title_free_wf %>%
   with(wordcloud(words = job_word, freq = n, max.words = 100,
                  random.order = FALSE, random.color = FALSE,
-                 colors = new_pal))
+                 color = rocket_pal)))
 
+
+##STACKED BAR CHART##
+#filter to jobs in the US (many variations of country name)
 us <- c("US", "United States", "usa", "us", "Unite States", "United States", "United States of America",
         "united states", "U.S", "U.S.", "United states", "U.S.A.", "United States Of America", "Uniyed states",
         "Usa")
 us_tech <- tech %>% filter(country %in% us)
 
+#create salary bins
 us_tech2 <- us_tech %>% mutate(
                               salary_bin = case_when(
                                 annual_salary < 25000 ~ "<25k",
@@ -87,6 +96,7 @@ my_theme <- theme(
   legend.background = element_rect(fill = "black", color="white")
 )
 
+#barchart
 (barchart <- ggplot(us_tech2, aes(x=salary_bin, fill = how_old_are_you)) +
     geom_bar() +
     labs(x = "\nSalary",
@@ -97,12 +107,7 @@ my_theme <- theme(
     scale_fill_viridis_d(direction=-1) +
     my_theme)
 
-
-
-
-
-
-
-
-
-
+# save image
+ggsave("salaries_by_age.png",
+       plot = barchart,
+       device = agg_png(width = 8, height = 5, units = "in", res = 300))
