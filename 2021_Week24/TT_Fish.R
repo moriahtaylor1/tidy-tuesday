@@ -6,6 +6,8 @@ library(showtext)
 library(extrafont)
 library(ragg)
 library(ggthemes)
+library(png)
+library(grid)
 
 ##LOAD DATA##
 tuesdata <- tidytuesdayR::tt_load(2021, week = 24)
@@ -33,9 +35,9 @@ showtext_auto()
 my_theme <- theme(
   #titles
   plot.title=element_markdown(family="regular", vjust=0.5,
-                          hjust=0, size=45, color="white"),
+                          hjust=1, size=55, color="white"),
   plot.caption=element_text(family="regular", size=22, color="#cccccc",
-                            vjust=-3, hjust=0.5),
+                            vjust=-4, hjust=0.5),
   #background
   panel.border=element_blank(),
   panel.grid.major = element_blank(),
@@ -49,30 +51,42 @@ my_theme <- theme(
   axis.line = element_blank(),
   axis.title.x = element_text(size=40, family="regular", color="white"),
   axis.title.y = element_blank(),
-  axis.text.y = element_text(size=30, family="regular", color="white", vjust=4),
+  axis.text.y = element_text(size=35, family="regular", color="white"),
   axis.text.x = element_blank(),
   #no legend
   legend.position = "none")
 
-fish2010 <- fish %>% filter(year==2010)
-fish2015 <- fish %>% filter(year==2015)
+year_colors <- c("#B3B047", "#487497",) #lime green and steel blue
 
-year_colors <- c("#487497", "#B3B047") #steel blue and lime green
+#load images
+walleye_png <- readPNG("walleye-clipart.png")
+whitebass_png <- readPNG("bass-clipart.png")
+yellowperch_png <- readPNG("perch-clipart.png")
+#prep images for plot
+walleye_img <- rasterGrob(walleye_png, interpolate = TRUE)
+whitebass_img <- rasterGrob(whitebass_png, interpolate = TRUE)
+yellowperch_img <- rasterGrob(yellowperch_png, interpolate = TRUE)
 
-(fish_plot <- fish %>% ggplot(aes(fill=as.factor(year), y=grand_total, x=species)) +
+(fish_plot <- fish %>% ggplot(aes(fill=as.factor(-year), y=grand_total, x=species)) +
                 geom_bar(position="dodge", stat="identity") + 
                 scale_fill_manual(values=year_colors) +
                 geom_text(aes(label=grand_total, family="regular"), 
-                         position=position_dodge(width=0.9), hjust=1.1, size=8, color="white") + 
+                         position=position_dodge(width=0.9), hjust=1.1, size=10, color="white") + 
                 labs(
-                  title="Fish Populations in Lake Erie in <span style='color:#487497'>2010</span> and <span style='color:#B3B047'>2015</span>",
+                  title="Fish Populations in Lake Erie in <i style='color:#B3B047'>2010</i> and <i style='color:#487497'>2015</i>",
                   caption="Source: Great Lakes Fishery Commission | Moriah Taylor | Twitter: moriah_taylor58 | GitHub: moriahtaylor1") +
-                ylab("Grand Total") +
+                ylab("")+
+                #add images
+                annotation_custom(yellowperch_img, xmin=2, xmax=4, ymin=0, ymax=2000) +
+                annotation_custom(whitebass_img, xmin=-Inf, xmax=Inf, ymin=0, ymax=2000) +
+                annotation_custom(walleye_img, xmin=-1, xmax=3, ymin=0, ymax=2000) +
+                #make horizontal
                 coord_flip() + 
+                #add theme
                 my_theme)
 
 ggsave("fish_plot.png",
        plot=fish_plot,
-       device = agg_png(width = 7, height = 5, units = "in", res = 300))
+       device = agg_png(width = 8, height = 5, units = "in", res = 300))
 
 
