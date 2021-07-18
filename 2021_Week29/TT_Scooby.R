@@ -139,11 +139,12 @@ area_graph_theme <- my_theme <- theme(
   axis.ticks.length=unit(0.15, "cm"),
   axis.ticks = element_blank(),
   axis.line = element_blank(),
-  axis.title = element_blank(),
+  axis.title = element_text(size=45, family="scooby", colour="black"),
   axis.text = element_text(size=30, family="scooby", colour="black"),
   #no legend
   legend.position = "none")
 
+#create arrows
 arrows <- 
   tibble(
     x1 = c(2007, 1975), 
@@ -152,6 +153,7 @@ arrows <-
     y2 = c(40, 385)
   )
 
+#create area plot
 engagement_area <- scooby_engagement %>% ggplot(aes(x=as.numeric(year), y=avg_engage)) + 
                         geom_line(color="#00b4d0") + geom_point(color="#00b4d0", fill="#00b4d0") +
                         geom_area(fill="#00b4d0", alpha=0.5) + 
@@ -160,7 +162,7 @@ engagement_area <- scooby_engagement %>% ggplot(aes(x=as.numeric(year), y=avg_en
                                    color = "gray20", curvature = -0.3, 
                                    inherit.aes = FALSE) +
                         annotate("text",
-                                 label = "There are the most reviews for the first season of the show",
+                                 label = "There are the most reviews for the first year of the show",
                                  x = 1988.5,
                                  y = 390,
                                  family = "scooby",
@@ -173,7 +175,7 @@ engagement_area <- scooby_engagement %>% ggplot(aes(x=as.numeric(year), y=avg_en
                                  family = "scooby",
                                  size = 7
                         ) +
-                        xlab("Year") + ylab("Number of IMDB Reviews") +
+                        xlab("") + ylab("") + labs(title="IMDB Reviews") +
                         coord_cartesian(expand=FALSE, clip='off') +
                         area_graph_theme
 
@@ -181,3 +183,110 @@ engagement_area <- scooby_engagement %>% ggplot(aes(x=as.numeric(year), y=avg_en
 ggsave("engagement.png",
        plot=engagement_area,
        device = agg_png(width = 6, height = 4, units = "in", res = 300))
+
+#code from Kierisi
+tidyscooby <- scooby_tv %>% 
+  separate_rows(monster_type, sep=",", convert=TRUE) %>% 
+  drop_na(monster_type, motive) %>%
+  filter(monster_type != "") %>%
+  mutate(monster_type = str_trim(monster_type),
+         monster_type = recode(monster_type,
+                               Possessed = "Possessed Object",
+                               Disguise = "Disguised"),
+         across(where(is.character), factor))
+#remove null motives
+tidyscooby <- tidyscooby %>% filter(motive != "NULL")
+#create vector of colors for bar graph
+color_vector <- c("darkgrey", "darkgrey", "#70498a", rep("darkgrey", 13))
+#bar graph theme
+bar_graph_theme2 <- my_theme <- theme(
+  #titles
+  plot.title=element_text(family="scooby", size=50, color="black", hjust=0.5, vjust=1),
+  plot.subtitle=element_text(family="scooby", size=30, color="black", hjust=0.5, vjust=1),
+  plot.caption=element_text(family="scooby", size=20, color="darkgrey", hjust=0.5, vjust=1),
+  plot.title.position = "plot",
+  plot.caption.position = "plot",
+  #background
+  panel.border=element_blank(),
+  panel.grid.major.y = element_blank(),
+  panel.grid.minor.y = element_blank(),
+  panel.background = element_rect(fill = "white"),
+  plot.background = element_rect(fill = "white"),
+  plot.margin=ggplot2::margin(0.5, 0.5, 0.5, 0.5, "in"),
+  #axes
+  axis.ticks.length=unit(0.15, "cm"),
+  axis.ticks = element_blank(),
+  axis.line = element_blank(),
+  axis.title = element_blank(),
+  axis.text.x = element_blank(),
+  axis.text.y = element_text(size=35, family="scooby", colour="black"),
+  #no legend
+  legend.position = "none")
+#create bar graph
+motive_bar <- tidyscooby %>% 
+                group_by(motive) %>%
+                summarise(count=n()) %>%
+                ggplot(aes(reorder(motive, count), count)) +
+                geom_col(fill=color_vector, color=NA) + 
+                geom_text(aes(label=count), family="scooby", size=14, hjust=-0.1, color="black") +
+                labs(title="Main Motive for Scooby Doo Crime is Competition") +
+                coord_flip(expand=FALSE, clip='off') + bar_graph_theme2
+
+
+#save plot
+ggsave("motive.png",
+       plot=motive_bar,
+       device = agg_png(width = 6, height = 4, units = "in", res = 300))
+
+#remove null monster type
+tidyscooby <- tidyscooby %>% filter(monster_type != "NULL")
+#group by series to see most popular shows
+scooby_ratings2 <- scooby_imdb %>% group_by(series_name) %>% summarise(avg_rating = mean(as.numeric(imdb)),
+                                                                       total_reviews = sum(as.numeric(engagement)))
+best_shows <- scooby_ratings2 %>% filter(total_reviews > 2800)
+best_shows_list <- best_shows$series_name
+filtered_scooby <- tidyscooby %>% filter(series_name %in% best_shows_list)
+
+scooby_colors2 <- c("#006cdc", "#fda42b", "#880008", "#70498a", "#57911d", "#d0afdb", "#89653f", "#00b4d0",
+                    "#291e13", "#006c7d", "#66a7ea")
+
+#bar graph theme
+bar_graph_theme3 <- my_theme <- theme(
+  #titles
+  plot.title=element_text(family="scooby", size=65, color="black", hjust=0.5, vjust=1),
+  plot.subtitle=element_text(family="scooby", size=30, color="black", hjust=0.5, vjust=1),
+  plot.caption=element_text(family="scooby", size=20, color="darkgrey", hjust=0.5, vjust=1),
+  plot.title.position = "plot",
+  plot.caption.position = "plot",
+  #background
+  panel.border=element_blank(),
+  panel.grid.major.y = element_blank(),
+  panel.grid.minor.y = element_blank(),
+  panel.background = element_rect(fill = "white"),
+  plot.background = element_rect(fill = "white"),
+  plot.margin=ggplot2::margin(0.5, 0.5, 0.5, 0.5, "in"),
+  #axes
+  axis.ticks.length=unit(0.15, "cm"),
+  axis.ticks = element_blank(),
+  axis.line = element_blank(),
+  axis.title = element_blank(),
+  axis.text.x = element_blank(),
+  axis.text.y = element_text(size=22, family="scooby", colour="black"),
+  #no legend
+  legend.position = "right",
+  legend.text = element_text(family="scooby", size=18))
+
+monster_bar <- filtered_scooby %>% ggplot(aes(fill=monster_type, y=10, x=series_name)) +
+                    geom_bar(position="fill", stat="identity") + 
+                    scale_fill_manual(values=scooby_colors2) +
+                    #scale_fill_viridis(discrete=TRUE) +
+                    labs(title="Scooby-Doo Monsters by Type") +
+                    guides(fill=guide_legend(title=NULL)) +
+                    coord_flip(expand=FALSE) + bar_graph_theme3
+
+#save plot
+ggsave("monster_type.png",
+       plot=monster_bar,
+       device = agg_png(width = 6, height = 4, units = "in", res = 300))
+
+
