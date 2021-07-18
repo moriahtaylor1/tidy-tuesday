@@ -5,6 +5,7 @@ library(ggplot2) #plots
 library(showtext) #add font
 library(ragg) #ggsave
 library(patchwork) #put together multiple plots
+library(ggimage) #image as annotation
 
 #load data
 tuesdata <- tidytuesdayR::tt_load(2021, week=29)
@@ -71,6 +72,7 @@ showtext_auto()
 bar_graph_theme <- my_theme <- theme(
   #titles
   plot.title=element_text(family="scooby", size=65, color="black", hjust=1, vjust=1),
+  plot.subtitle=element_text(family="scooby", size=30, color="black", hjust=0.5, vjust=1),
   plot.caption=element_text(family="scooby", size=20, color="darkgrey", hjust=0.5, vjust=1),
   plot.title.position = "plot",
   plot.caption.position = "plot",
@@ -87,7 +89,7 @@ bar_graph_theme <- my_theme <- theme(
   axis.line = element_blank(),
   axis.title = element_blank(),
   axis.text.x = element_blank(),
-  axis.text.y = element_text(size=30, family="scooby", colour="black"),
+  axis.text.y = element_text(size=35, family="scooby", colour="black"),
   #no legend
   legend.position = "none")
 #colors 
@@ -99,6 +101,7 @@ phrases_bar <- phrases_total %>% ggplot(aes(x=phrase, y=as.integer(total))) +
                 geom_col(fill=scooby_colors) +
                 geom_text(aes(label=total), family="scooby", size=14, hjust=-0.1, color="black") +
                 labs(title="Like zoinks, that's a lot of Zoinks!",
+                     subtitle="how many times each catchphrase has been said in the series",
                      caption = "Moriah Taylor | #TidyTuesday | Twitter: @moriah_taylor58") +
                 scale_x_discrete(labels = scooby_labels) +
                 coord_flip(clip='off') + bar_graph_theme
