@@ -38,7 +38,7 @@ showtext_auto()
 #my plot theme #ef8650
 my_theme <- theme(
   # titles
-  plot.title = element_text(family = "bold", size = 50, color = "yellow", hjust=0.5, vjust=0.5),
+  plot.title = element_text(family = "bold", size = 60, color = "yellow", hjust=0.5, vjust=0.5),
   plot.subtitle = element_text(family = "regular", size = 40, color = "white", hjust=0.5),
   plot.caption = element_text(family = "light", size = 40, color = "#666666", hjust = 1),
   
@@ -61,8 +61,8 @@ my_theme <- theme(
 
 
 
-plot_title <- expression(atop(x="2007 AND 2008 WERE PEAK YEARS FOR THE INSTALLATION",
-                              y="OF WATER SOURCES IN UGANDA"))
+plot_title <- expression(atop(x=" 2007 AND 2008 WERE PEAK YEARS FOR THE ",
+                              y="INSTALLATION OF WATER SOURCES IN UGANDA"))
 
 strips <- ggplot(uganda_installs, aes(x=reorder(install_year, -install_year), y=1, fill=n)) + 
             geom_tile()  + 

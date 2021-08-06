@@ -6,6 +6,7 @@ library(showtext)
 library(extrafont)
 library(ragg)
 
+
 #add fonts
 font_add(family = "regular", "Rubik-VariableFont_wght.ttf")
 font_add(family = "title", "BebasNeue-Regular.ttf")
