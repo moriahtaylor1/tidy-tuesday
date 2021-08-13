@@ -1,0 +1,117 @@
+#load packages
+library(tidyverse)
+library(tidytuesdayR) #tidytuesday
+library(ggplot2) #plots
+library(showtext) #add font
+library(ragg) #ggsave
+library(patchwork) #combine plots
+library(stringr)  #str_wrap()
+
+#load data
+tuesdata <- tidytuesdayR::tt_load(2021, week = 33)
+investment <- tuesdata$investment
+
+#get list of unique meta categories to choose from
+unique(investment$meta_cat)
+
+#filter down to power meta categories 
+power <- investment %>% filter(meta_cat %in% c("Electric power", "Natural gas /petroleum power"))
+
+#get list of unique categories to look at
+unique(power$category)
+
+##make 4 datasets - one for each type##
+#renewable energy
+renewable <- power %>% filter(category %in% c("Private turbines/steam engines",
+                                              "Private wind and solar power structures"))
+#electric energy
+electric <- power %>% filter(category %in% c("S&L electric power structures",
+                                             "Federal electric power structures",
+                                             "Private electrical transmission equipment",
+                                             "Private electric power structures"))
+#gas energy
+gas <- power %>% filter(category %in% c("S&L gas structures",
+                                        "Private petroleum pipelines",
+                                        "Private natural gas pipelines"))
+
+##plotting##
+#load fonts
+font_add(family="regular", "Lato-Regular.ttf")
+font_add(family="bold", "Lato-Bold.ttf")
+showtext_auto()
+
+#create theme
+my_theme <- theme(
+  #titles
+  plot.title=element_text(family="bold", vjust=1, hjust=0.5, size=80, color="black"),
+  plot.title.position = "plot",
+  plot.subtitle=element_text(family="regular", vjust=1, hjust=0, size=42, color="black"),
+  plot.caption=element_text(family="regular", size=35, color="#cccccc", vjust=-4, hjust=0.5),
+  #background
+  panel.border=element_blank(),
+  panel.grid.major = element_blank(),
+  panel.grid.minor = element_blank(),
+  panel.background = element_rect(fill = "white", color="#cccccc"),
+  plot.background = element_rect(fill = "white"),
+  plot.margin=ggplot2::margin(0.5, 0.5, 0.5, 0.5, "in"),
+  #axes
+  axis.ticks.length=unit(0.15, "cm"),
+  axis.ticks = element_blank(),
+  axis.line = element_blank(),
+  axis.title.y = element_text(size=65, family="bold", color="black"),
+  axis.title.x = element_blank(),
+  axis.text = element_text(size=35, family="regular", color="black"),
+  #no legend
+  legend.position = "top",
+  legend.title = element_blank(),
+  legend.background = element_rect(fill = "white", color = "white"),
+  legend.text = element_text(size=30, family="regular", color="black"))
+
+#renewable
+renewable_plot <- renewable %>% ggplot(aes(x=year, y=gross_inv, fill=category)) +
+                    geom_area() + coord_cartesian(expand=FALSE) +
+                    xlab("") + ylab("R E N E W A B L E") +
+                    labs(title="Investment in Energy Infrastructure",
+                    subtitle="Gross investment measured in millions of USD") +
+                    scale_fill_manual(values=c("#6AB5CF", "#097FA8")) +
+                    ylim(c(0,100000)) +
+                    guides(fill=guide_legend(nrow=2,byrow=TRUE)) +
+                    my_theme
+
+ggsave("renewable.png",
+       plot=renewable_plot,
+       device = agg_png(width = 6, height = 6, units = "in", res = 300))
+
+#electric
+electric_plot <- electric %>% ggplot(aes(x=year, y=gross_inv, fill=category)) +
+                    geom_area() + coord_cartesian(expand=FALSE) +
+                    xlab("") + ylab("E L E C T R I C") +
+                    scale_fill_manual(values=c("#F0D607", "#E2A50E", "#E2800E", "#CD670D")) +
+                    guides(fill=guide_legend(nrow=2,byrow=TRUE)) +
+                    ylim(c(0,100000)) +
+                    my_theme
+
+ggsave("electric.png",
+       plot=electric_plot,
+       device = agg_png(width = 6, height = 6, units = "in", res = 300))
+
+#gas
+gas_plot <- gas %>% ggplot(aes(x=year, y=gross_inv, fill=category)) +
+                      geom_area() + coord_cartesian(expand=FALSE) +
+                      xlab("") + ylab("G A S") +
+                      scale_fill_manual(values=c("#B872C5", "#9748A6", "#693B9E")) +
+                      guides(fill=guide_legend(nrow=3,byrow=TRUE)) +
+                      ylim(c(0,100000)) +
+                      my_theme
+
+ggsave("gas.png",
+       plot=gas_plot,
+       device = agg_png(width = 6, height = 6, units = "in", res = 300))
+
+
+combined <- electric_plot + renewable_plot + gas_plot
+
+
+ggsave("combined_plots.png",
+       plot = combined,
+       device = agg_png(width=18, height=6, units="in", res=300))
