@@ -86,6 +86,7 @@ ggsave("speech_commands_bychar.png",
 
 
 #Idea 2: most frequent words
+#use functions from tm package to clean text
 all_words <- stri_paste(computer$interaction, collapse=" ")
 all_words <- tolower(all_words)
 all_words <- removeNumbers(all_words)
@@ -93,12 +94,29 @@ all_words <- removePunctuation(all_words)
 all_words <- removeWords(all_words, stopwords("english"))
 all_words <- stripWhitespace(all_words)
 
+#create dataframe of words
 split_words <- strsplit(all_words, split=" ")
 words_df <- as.data.frame(split_words[1])
 names(words_df) <- "word"
 
+#get counts of words
 word_counts <- words_df %>% count(word) %>% arrange(-n)
 counts_slice <- word_counts %>% slice_max(n, n=10)
+
+#create bar plot
+word_freq_bar <- counts_slice %>% ggplot(aes(x=word, y=n)) +
+                  geom_col(fill="#0EEA9B") + 
+                  geom_text(aes(label=n, family="regular"), 
+                              position=position_dodge(width=0.9), 
+                              hjust=1.2, size=10, color="#0C1335") +
+                  labs(title="10 Most-Used Words in Star Trek Commands",
+                       caption="Moriah Taylor | @moriah_taylor58 | #TidyTuesday Week 34") +
+                  coord_flip(expand=FALSE) + my_theme
+
+ggsave("word_freq.png",
+       plot=word_freq_bar,
+       device = agg_png(width = 7, height = 5, units = "in", res = 300))
+
 
 
 
