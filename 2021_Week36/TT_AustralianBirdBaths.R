@@ -41,39 +41,54 @@ counts %>% ggplot(aes(x=urban_rural, y=bird_sum, fill=area_season)) +
                 facet_wrap(~bird_type)
 
 ##plot styling##
-font_add(family="regular", "")
+font_add(family="regular", "BalsamiqSans-Regular.ttf")
 showtext_auto()
 
 
 #theme
 my_theme <- theme(
   #titles
-  plot.title=element_markdown(family="regular", hjust=0.5, size=60, color="black"),
+  plot.title=element_markdown(family="regular", hjust=0.5, size=45, color="black"),
   plot.title.position = "plot",
-  plot.subtitle = element_textbox(family="regular", size=26, color="darkgrey")
-  plot.caption=element_text(family="regular", size=35, color="white", hjust=0.5),
+  plot.subtitle = element_text(family="regular", size=30, hjust=0.5, color="#333333"),
+  plot.caption=element_text(family="regular", size=35, color="black", hjust=0.5),
   plot.caption.position = "plot",
   #background
   panel.border=element_blank(),
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
-  panel.background = element_rect(fill = "white"),
-  plot.background = element_rect(fill = "white"),
+  panel.background = element_rect(fill = "#cccccc"),
+  plot.background = element_rect(fill = "#cccccc"),
   plot.margin=ggplot2::margin(0.5, 0.5, 0.5, 0.5, "in"),
   #axes
   axis.ticks.length=unit(0.15, "cm"),
   axis.ticks = element_blank(),
   axis.line = element_blank(),
   axis.title = element_blank(),
-  axis.text = element_text(size=35, family="regular", color="black"),
+  axis.text.y = element_text(size=30, family="regular", color="black"),
   axis.text.x = element_blank(),
+  #multi-plot text titles
+  strip.text = element_text(family="regular", size=35, color="black"),
+  strip.background = element_rect(fill="white", color="black"),
   #no legend
   legend.position = "none")
 
 #colors - light green, light purple, dark green, dark purple
 fill_colors <- c("#8ca775", "#9075a7", "#406d19", "#46196d")
 
-counts %>% ggplot(aes(x=urban_rural, y=bird_sum, fill=area_season)) +
-  geom_bar(position="stack", stat="identity") +
-  scale_fill_manual(values=fill_colors) +
-  facet_wrap(~bird_type)
+#plot
+counts_plot <- counts %>% ggplot(aes(x=urban_rural, y=bird_sum, fill=area_season)) +
+          geom_bar(position="stack", stat="identity", color="black") +
+          scale_fill_manual(values=fill_colors) +
+          coord_cartesian(expand=FALSE) +
+          ylim(0,275) +
+          facet_wrap(~bird_type) + 
+          labs(title="Bird Bath Spottings in <span style='color:#406d19'>Rural</span> and <span style='color:#46196d'>Urban</span> Areas of Australia",
+               subtitle="These stacked bar charts depict the four most populous birds in the dataset.\n**Lighter bars indicate summer sightings and darker bars indicate winter sightings.",
+               caption="\nMoriah Taylor | @moriah_taylor58 | #TidyTuesday") +
+          my_theme
+
+#save plot
+ggsave("spottings.png",
+       plot=counts_plot,
+       device = agg_png(width = 6, height = 6, units = "in", res = 300))
