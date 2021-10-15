@@ -3,16 +3,21 @@
 
 # 2021
 
-## Week 30 - U.S. Droughts [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week30)
+## Week 31 - Olympics [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week31)
+<img src="Plots/2021/Week31a-olympics-summer.png" width=450>  <img src="Plots/2021/Week31b-olympics-winter.png" width=400>
 
+## Week 30 - U.S. Droughts [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week30)
+<img src="Plots/2021/Week30-droughts.png" width=600>
 
 
 ## Week 29 - Scooby Doo [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week29)
-
+<img src="Plots/2021/Week29a-Scooby engagement.png" width=450>  <img src="Plots/2021/Week29b-Scooby monsters.png" width=450>
+<img src="Plots/2021/Week29c-Scooby motive.png" width=450>  <img src="Plots/2021/Week29d-Scooby phrases.png" width=450>
 
 
 ## Week 27 - Animal Rescues [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week27)
-
+<img src="Plots/2021/Week27-Animal Rescues Bar.png" width=450>
+<img src="Plots/2021/Week27-Animal Rescues Cat Plot.png" width=450>
 
 
 ## Week 26 - Public Park Access [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week26)
