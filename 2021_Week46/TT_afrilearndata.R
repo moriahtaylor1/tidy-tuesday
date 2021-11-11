@@ -7,9 +7,6 @@ library(afrilearndata)
 library(sf)
 library(viridis)
 library(readxl)
-#library(rcartocolor)
-
-
 
 #load font
 font_add(family = "regular", "Oswald-Regular.ttf")
