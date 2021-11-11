@@ -57,7 +57,7 @@ afri_electricity <- afri_electricity %>% mutate(electricity_perc = electricity_a
 electricity_plot <- afri_electricity %>% ggplot() +
                       geom_sf(aes(geometry=geometry, fill=electricity_perc), color="#2C1B07") +
                       scale_fill_viridis(option="rocket", direction=-1, label=scales::percent) +
-                      labs(title="Electricity Access (% of Population)",
+                      labs(title="Electricity Access (% of Population) [2019]",
                            caption="Moriah Taylor | @moriah_taylor58 | {afrilearndata} and World Bank DataBank",
                            fill="") +
                       map_theme
