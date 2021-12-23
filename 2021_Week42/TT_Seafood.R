@@ -50,3 +50,5 @@ plot <- income_cats_pivot %>% ggplot(aes(x=year, y=production_metric_tons, color
 ggsave("farming_capture_income.png",
        plot=plot,
        device = agg_png(width = 8, height = 5, units = "in", res = 300))
+
+

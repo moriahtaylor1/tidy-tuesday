@@ -145,7 +145,7 @@ area_graph_theme <- my_theme <- theme(
   legend.position = "none")
 
 #create arrows
-arrows <- 
+arrow <- 
   tibble(
     x1 = c(2007, 1975), 
     x2 = c(2008, 1970),
