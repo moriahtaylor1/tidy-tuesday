@@ -3,6 +3,9 @@
 
 # 2021
 
+## Week 32 - Paralympics[(code)]()
+<img src="Plots/2021/Week32-paralympics.png" width=500>
+
 ## Week 31 - Olympics [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week31)
 <img src="Plots/2021/Week31a-olympics-summer.png" width=450>  <img src="Plots/2021/Week31b-olympics-winter.png" width=400>
 
