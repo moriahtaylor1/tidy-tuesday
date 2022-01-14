@@ -1,9 +1,64 @@
 # Tidy Tuesday
 #TidyTuesday is a weekly social data project in R which encourages participants to summarize and arrange data to make meaningful charts with ggplot2, tidyr, dplyr, and other tools in the tidyverse ecosystem. More information can be found on this project at https://github.com/rfordatascience/tidytuesday. 
 
+# 2022 
+
+## Week 2 - Bee Colony Stressors [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2022_Week02)
+<img src="Plots/2022/Week02-BeeColonyStressors.png" width=700>
+
+## Week 1 - Bring Your Own Data! [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2022_Week01)
+<img src="Plots/2022/Week01-AnimalCrossing.png" width=350>
+
 # 2021
 
-## Week 32 - Paralympics[(code)]()
+## Week 52 - Starbucks Drinks [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week52)
+<img src="Plots/2021/Week52-Starbucks.png" width=500>
+
+## Week 50 - Spiders [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week50)
+<img src="Plots/2021/Week50-Spiders.png" width=500>
+
+## Week 47 - Du Bois Recreations [(code)] (https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week47)
+<img src = "Plots/2021/Week47a-DuBois.png" width=300> <img src="Plots/2021/Week47b-DuBois.png" width=300> <img src="Plots/2021/Week47c-DuBois.png" width=300>
+
+## Week 46 - {afrilearnr} [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week46)
+<img src="Plots/2021/Week46a-afrilearn.png" width=375> <img src="Plots/2021/Week46b-afrilearn.png" width=375>
+
+## Week 44 - Ultra Running [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week44)
+<img src="Plots/2021/Week44a-UltraRunning.png" width=450> <img src="Plots/2021/Week44b-UltraRunning.png" width=450>
+
+## Week 43 - Giant Crops [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week43)
+<img src="Plots/2021/Week43a-GiantGourds.png" width=500>
+<img src="Plots/2021/Week43b-GiantWatermelons.png" width=700>
+
+## Week 42 - Seafood Production [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week42)
+<img src="Plots/2021/Week42-seafood_production.png" width=500>
+
+## Week 41 - Registered Nurse Wages [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week41)
+<img src="Plots/2021/Week41-NurseWages.png" width=550>
+
+## Week 40 - NBER Papers [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week40)
+<img src="Plots/2021/Week40-NBER.png" width=450>
+
+## Week 38 - Billboard Top 100 [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week38)
+<img src="Plots/2021/Week38-Billboard100.png" width=500>
+
+## Week 37 - Formula One [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week37)
+<img src="Plots/2021/Week37a-FormulaOne-WinnersByTeam.png" width=450> <img src="Plots/2021/Week37b-FormulaOne-WinnersByTeamByYear.png" width=450>
+<img src="Plots/2021/Week37c-FormulaOne-WinnersByTeamNationality.png" width=450> <img src="Plots/2021/Week37d-FormulaOne-WinsByDriverNationality.png" width=450>
+
+## Week 36 - Australian Bird Baths [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week36)
+<img src="Plots/2021/Week36-AustralianBirds.png" width=500>
+
+## Week 35 - Lemurs [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week35)
+<img src="Plots/2021/Week35-Lemurs.png" width=600>
+
+## Week 34 - Star Trek [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week34)
+<img src = "Plots/2021/Week34a-Trek commands.png" width=450> <img src="Plots/2021/Week34b-Trek words.png" width=450>
+
+## Week 33 - Infrastructure Spending [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week33)
+<img src="Plots/2021/Week33-infrastructure.png" width=800>
+
+## Week 32 - Paralympics[(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week32)
 <img src="Plots/2021/Week32-paralympics.png" width=500>
 
 ## Week 31 - Olympics [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week31)
