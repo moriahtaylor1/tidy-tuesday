@@ -17,7 +17,7 @@
 ## Week 50 - Spiders [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week50)
 <img src="Plots/2021/Week50-Spiders.png" width=500>
 
-## Week 47 - Du Bois Recreations [(code)] (https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week47)
+## Week 47 - Du Bois Recreations [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week47)
 <img src = "Plots/2021/Week47a-DuBois.png" width=300> <img src="Plots/2021/Week47b-DuBois.png" width=300> <img src="Plots/2021/Week47c-DuBois.png" width=300>
 
 ## Week 46 - {afrilearnr} [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2021_Week46)
