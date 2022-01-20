@@ -46,7 +46,7 @@ bee_plot <- ggplot(stressor2020_red, aes(x=stressor, y=stress_pct, color=stresso
   geom_beeswarm(size=0.5) +
   facet_wrap(~months, nrow=1) +
   scale_color_manual(values = c("#86b918", "#c76009", "#9258b1", "#3ab5b3")) +
-  labs(title="Bee Colony Stressors in the U.S.",
+  labs(title="Bee Colony Stressors in the U.S. (2020)",
        subtitle="Percentage of colonies affected in each state by <strong style='color:#86b918'>Diseases</strong>, <strong style='color:#c76009'>Pesticides</strong>, <strong style='color:#9258b1'>Varroa Mites</strong>, and <strong style='color:#3ab5b3'>Other Pests/Pesticides</strong>.",
        caption="Moriah Taylor | @moriah_taylor58 | #TidyTuesday") +
   ylab("% Colonies Affected") +
