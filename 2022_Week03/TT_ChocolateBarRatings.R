@@ -57,7 +57,7 @@ chocolate_subset <- chocolate %>% filter(country_of_bean_origin %in% country_lis
 #put countries into lists that can specify region
 north_amer <- c("Mexico", "U.S.A.")
 central_amer <- c("Ecuador", "Nicaragua", "Belize", "Guatemala", "Costa Rica")
-carribean <- c("Dominican Republic", "Papua New Guinea", "Haiti", "Honduras", "Jamaica")
+caribbean <- c("Dominican Republic", "Papua New Guinea", "Haiti", "Honduras", "Jamaica")
 south_amer <- c("Venezuela", "Peru", "Bolivia", "Colombia", "Brazil")
 africa <- c("Madagascar", "Tanzania", "Trinidad", "Ghana")
 asia <- c("Vietnam", "India", "Philippines", "Indonesia")
@@ -65,7 +65,7 @@ asia <- c("Vietnam", "India", "Philippines", "Indonesia")
 chocolate_subset <- chocolate_subset %>% mutate(Region = case_when(
   country_of_bean_origin %in% north_amer ~ "North America",
   country_of_bean_origin %in% central_amer ~ "Central America",
-  country_of_bean_origin %in% carribean ~ "Carribean",
+  country_of_bean_origin %in% carribean ~ "Caribbean",
   country_of_bean_origin %in% south_amer ~ "South America",
   country_of_bean_origin %in% africa ~ "Africa",
   country_of_bean_origin %in% asia ~ "Asia"
