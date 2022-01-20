@@ -65,7 +65,7 @@ asia <- c("Vietnam", "India", "Philippines", "Indonesia")
 chocolate_subset <- chocolate_subset %>% mutate(Region = case_when(
   country_of_bean_origin %in% north_amer ~ "North America",
   country_of_bean_origin %in% central_amer ~ "Central America",
-  country_of_bean_origin %in% carribean ~ "Caribbean",
+  country_of_bean_origin %in% caribbean ~ "Caribbean",
   country_of_bean_origin %in% south_amer ~ "South America",
   country_of_bean_origin %in% africa ~ "Africa",
   country_of_bean_origin %in% asia ~ "Asia"
