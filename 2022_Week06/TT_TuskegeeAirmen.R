@@ -11,7 +11,7 @@ airmen <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tid
 
 #cleaning
 airmen <- airmen %>% mutate(pilot_type = case_when(
-  pilot_type=="Liaison pilot" | pilot_type=="Liason pilot" ~ "Liason Pilot",
+  pilot_type=="Liaison pilot" | pilot_type=="Liason pilot" ~ "Liaison Pilot",
   pilot_type=="Twin engine" ~ "Twin Engine",
   pilot_type=="Service pilot" ~ "Service Pilot",
   pilot_type=="Single engine" ~ "Single Engine"
