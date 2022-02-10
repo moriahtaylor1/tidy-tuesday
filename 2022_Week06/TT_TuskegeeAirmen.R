@@ -21,7 +21,7 @@ airmen_clean <- airmen %>% drop_na(state) %>% filter(state %notin% c("Haiti", "V
 
 airmen_clean$pilot_type <- factor(airmen_clean$pilot_type,
                                   levels = c("Service Pilot",
-                                             "Liason Pilot",
+                                             "Liaison Pilot",
                                              "Twin Engine",
                                              "Single Engine"))
 
