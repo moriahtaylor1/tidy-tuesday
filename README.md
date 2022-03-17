@@ -3,6 +3,18 @@
 
 # 2022 
 
+## Week 9 - Alternative Fuel Stations [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2022_Week09)
+<img src="Plots/2022/Week09-AltFuel.png" width=450>
+
+## Week 6 - Tuskegee Airmen and Du Bois Challenge [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2022_Week06)
+<img src="Plots/2022/Week06a-Tuskegee.png" width=450>    <img src="Plots/2022/Week06b-Tuskegee.png" width=450>
+
+## Week 4 - Board Game Ratings [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2022_Week04)
+<img src="Plots/2022/Week04-BoardGames.png" width=500>
+
+## Week 3 - Chocolate Ingredients [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2022_Week03)
+<img src="Plots/2022/Week03-Chocolate.png" width=500>
+
 ## Week 2 - Bee Colony Stressors [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2022_Week02)
 <img src="Plots/2022/Week02-BeeColonyStressors.png" width=700>
 
