@@ -12,6 +12,8 @@
 ---
 
 # 2023
+## Week 32 - Hot Ones [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2023_Week32)
+<img src="Plots/2023/Week32-HotOnes.png" width=600>
 
 ---
 
