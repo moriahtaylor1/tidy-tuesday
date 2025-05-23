@@ -6,8 +6,7 @@
 # 2024
 
 ## Week 38 - Shakespeare Dialogue [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2024_Week38)
-<img src="Plots/2024/Week38-Shakespeare-bigrams.png" width=450>
-<img src="Plots/2024/Week38-Shakespeare-tf-idf.png" width=450>
+<img src="Plots/2024/Week38-Shakespeare-bigrams.png" width=350> <img src="Plots/2024/Week38-Shakespeare-tf-idf.png" width=350>
 
 ---
 
@@ -20,13 +19,13 @@
 # 2022 
 
 ## Week 12 - Baby Names [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2022_Week12)
-<img src="Plots/2022/Week12-BabyNames.png" width=450>
+<img src="Plots/2022/Week12-BabyNames.png" width=650>
 
 ## Week 10 - Erasmus Student Mobility [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2022_Week10)
-<img src="Plots/2022/Week10-Erasmus.png" width=450>
+<img src="Plots/2022/Week10-Erasmus.png" width=600>
 
 ## Week 9 - Alternative Fuel Stations [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2022_Week09)
-<img src="Plots/2022/Week09-AltFuel.png" width=450>
+<img src="Plots/2022/Week09-AltFuel.png" width=700>
 
 ## Week 6 - Tuskegee Airmen and Du Bois Challenge [(code)](https://github.com/moriahtaylor1/tidy-tuesday/tree/main/2022_Week06)
 <img src="Plots/2022/Week06a-Tuskegee.png" width=450>    <img src="Plots/2022/Week06b-Tuskegee.png" width=450>
